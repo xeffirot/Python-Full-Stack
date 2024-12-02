@@ -1,0 +1,218 @@
+import random
+
+# Reglas del juego
+print("""
+RULES:
+1. Cada jugador comienza con 10 puntos de vida y avanza según el número que saque en su tirada de dado.
+2. Si un jugador cae en una casilla par, es una zona segura y no recibe penalización.
+3. Si un jugador cae en una casilla impar, debe responder una pregunta de cultura general:
+   - Si responde correctamente, continúa sin penalización.
+   - Si responde incorrectamente, hará una tirada de penalización y su posición será ajustada.
+4. Después de que todos los jugadores terminen su turno, el enemigo avanzará y atacará a cualquier jugador en su camino.
+   - El enemigo tiene tres niveles de dificultad (fácil, normal, difícil) que determinan el daño que inflige.
+5. Si el enemigo está por delante de todos los jugadores al inicio de su turno, espera hasta la siguiente ronda.
+6. Los jugadores deben llegar a la casilla final para escapar; si todos llegan antes de la ronda final, ganan automáticamente.
+""")
+
+# Configuración inicial
+jugadores = []
+num_rondas = 10  # Número máximo de rondas
+casilla_final = 20  # Casilla final para escapar
+preguntas_cultura = [
+    {"pregunta": "¿Cual es la casa de Harry Potter?", "respuesta": "Gryffindor"},
+  {"pregunta": "¿Como se llama la escuela de magia en Inglaterra?", "respuesta": "Hogwarts"},
+  {"pregunta": "¿Quien es el director de Hogwarts en la primera saga?", "respuesta": "Dumbledore"},
+  {"pregunta": "¿Cual es el apellido de Ron?", "respuesta": "Weasley"},
+  {"pregunta": "¿Que hechizo se usa para desarmar?", "respuesta": "Expelliarmus"},
+  {"pregunta": "¿Que criatura es la mascota de Hagrid?", "respuesta": "Aragog"},
+  {"pregunta": "¿Cual es el nombre de la serpiente de Voldemort?", "respuesta": "Nagini"},
+  {"pregunta": "¿Cual es el apellido de Hermione?", "respuesta": "Granger"},
+  {"pregunta": "¿Que pocion permite cambiar de apariencia?", "respuesta": "Multijugos"},
+  {"pregunta": "¿Cual es el patronus de Snape?", "respuesta": "Cierva"},
+  {"pregunta": "¿Cual es la varita mas poderosa?", "respuesta": "Sauco"},
+  {"pregunta": "¿Que jugador busca la Snitch en quidditch?", "respuesta": "Buscador"},
+  {"pregunta": "¿Cual es la calle donde esta el callejon magico?", "respuesta": "Charing"},
+  {"pregunta": "¿Como se llama el banco de los magos?", "respuesta": "Gringotts"},
+  {"pregunta": "¿Cual es el nombre de la tienda de varitas?", "respuesta": "Ollivanders"},
+  {"pregunta": "¿Cual es la profesora de adivinacion?", "respuesta": "Trelawney"},
+  {"pregunta": "¿Quien es el elfo domestico de Harry?", "respuesta": "Dobby"},
+  {"pregunta": "¿Que animal simboliza a Hufflepuff?", "respuesta": "Tejon"},
+  {"pregunta": "¿Cual es el deporte magico mas popular?", "respuesta": "Quidditch"},
+  {"pregunta": "¿Que hechizo ilumina una varita?", "respuesta": "Lumos"},
+  {"pregunta": "¿Como se llama el bosque prohibido en Hogwarts?", "respuesta": "Prohibido"},
+  {"pregunta": "¿Quien mató a Sirius Black?", "respuesta": "Bellatrix"},
+  {"pregunta": "¿Que tipo de criaturas son los dementores?", "respuesta": "Oscuras"},
+  {"pregunta": "¿Que casa simboliza la serpiente?", "respuesta": "Slytherin"},
+  {"pregunta": "¿Quien traicionó a la familia Potter?", "respuesta": "Pettigrew"},
+  {"pregunta": "¿Cual es el nombre del heroe en Zelda?", "respuesta": "Link"},
+  {"pregunta": "¿Que criaturas aparecen en Pacman?", "respuesta": "Fantasmas"},
+  {"pregunta": "¿Quien es el enemigo en Mario Bros?", "respuesta": "Bowser"},
+  {"pregunta": "¿En que videojuego se usa la Master Sword?", "respuesta": "Zelda"},
+  {"pregunta": "¿Como se llama el personaje principal de Halo?", "respuesta": "Jefe Maestro"},
+  {"pregunta": "¿Cual es el nombre del hermano de Mario?", "respuesta": "Luigi"},
+  {"pregunta": "¿De que tipo principal es Lugia en la saga Pokemon?", "respuesta": "Normal"},
+  {"pregunta": "¿Que se necesita para minar en Minecraft?", "respuesta": "Pico"},
+  {"pregunta": "¿De que color es el icono cuando manejas a un Sims?", "respuesta": "Verde"},
+  {"pregunta": "¿Cual es el nombre de la consola de Nintendo en 2017?", "respuesta": "Switch"},
+  {"pregunta": "¿Quien es el protagonista de God of War?", "respuesta": "Kratos"},
+  {"pregunta": "¿Como se llama el planeta de origen del protagonista en Mass Effect?", "respuesta": "Terra"},
+  {"pregunta": "¿Existe el modo fácil en Dark Souls?", "respuesta": "No"},
+  {"pregunta": "¿Que tipo de juego es League of Legends?", "respuesta": "MOBA"},
+  {"pregunta": "¿En que juego aparece el personaje Samus?", "respuesta": "Metroid"},
+  {"pregunta": "¿Quien es el rival de Sonic?", "respuesta": "Robotnik"},
+  {"pregunta": "¿En que juego aparece el personaje Lara Croft?", "respuesta": "Tomb Raider"},
+  {"pregunta": "¿Que objeto necesita Mario para lanzar fuego?", "respuesta": "Flor"},
+  {"pregunta": "¿Cual es la mayor fuente de ingreso para Konami actualmente?", "respuesta": "Pachinko"},
+  {"pregunta": "¿A que Pokemon odia con todo su ser Mimikyu?", "respuesta": "Pikachu"},
+  {"pregunta": "¿Quien es el villano en Resident Evil 3?", "respuesta": "Nemesis"},
+  {"pregunta": "¿Que color es el anillo de Sonic?", "respuesta": "Dorado"},
+  {"pregunta": "¿Que tipo de juego es Fortnite?", "respuesta": "Battle Royale"},
+  {"pregunta": "¿Que videojuego incluye pokeballs?", "respuesta": "Pokemon"},
+  {"pregunta": "¿Que lenguaje usa 'print' para imprimir?", "respuesta": "Python"},
+  {"pregunta": "¿Cual es el comando para copiar en Git?", "respuesta": "Clone"},
+  {"pregunta": "¿Como se llama la estructura 'if' en español?", "respuesta": "Condicional"},
+  {"pregunta": "¿Cual es el lenguaje de estilo web?", "respuesta": "CSS"},
+  {"pregunta": "¿Que lenguaje usa llaves para bloques?", "respuesta": "Java"},
+  {"pregunta": "¿Como realizamos busquedas en lenguajes SQL?", "respuesta": "Query"},
+  {"pregunta": "¿Cual es el nombre de la memoria temporal?", "respuesta": "Cache"},
+  {"pregunta": "¿Como se dice Verdadero en un Boolean en Python?", "respuesta": "True"},
+  {"pregunta": "¿Que simbolo se usa para comentarios en Python?", "respuesta": "#"},
+  {"pregunta": "¿Que extension usa JavaScript?", "respuesta": "js"},
+  {"pregunta": "¿Como se llama el lenguaje que utiliza el framework Django?", "respuesta": "Python"},
+  {"pregunta": "¿Que lenguaje se usa en Unity?", "respuesta": "Csharp"},
+  {"pregunta": "¿Que se usa para escribir paginas web?", "respuesta": "HTML"},
+  {"pregunta": "¿Que significa RAM?", "respuesta": "Memoria"},
+  {"pregunta": "¿Cual es el comando para guardar en Git?", "respuesta": "Commit"},
+  {"pregunta": "¿Que extension usa Python?", "respuesta": "py"},
+  {"pregunta": "¿Que simbolo define ID en CSS?", "respuesta": "#"},
+  {"pregunta": "¿Como se llama el sistema de coordenadas de CSS?", "respuesta": "Flexbox"},
+  {"pregunta": "¿Que significa CLI?", "respuesta": "Interfaz"},
+  {"pregunta": "¿Como se llama la biblioteca de graficas en Python?", "respuesta": "Matplotlib"},
+  {"pregunta": "¿Que simbolo define clases en CSS?", "respuesta": "."},
+  {"pregunta": "¿Quien es el lider de BTS?", "respuesta": "RM"},
+  {"pregunta": "¿Cual es el color del oceano en 'Blue Hour'?", "respuesta": "Azul"},
+  {"pregunta": "¿Quien es la vocalista principal de Blackpink?", "respuesta": "Jisoo"},
+  {"pregunta": "¿Cual es el nombre de pila de Taehyung?", "respuesta": "Kim"},
+  {"pregunta": "¿Cual es la fandom de BTS?", "respuesta": "Army"},
+  {"pregunta": "¿Que color representa a Twice?", "respuesta": "Rosa"},
+  {"pregunta": "¿Que idol se conoce como 'maknae' en BTS?", "respuesta": "Jungkook"},
+  {"pregunta": "¿Como se llama el fandom de BLACKPINK?", "respuesta": "Blink"},
+  {"pregunta": "¿Quien canta 'More & More'?", "respuesta": "Twice"},
+  {"pregunta": "¿Que miembro de EXO tambien es actor?", "respuesta": "D.O."},
+  {"pregunta": "¿Que grupo canta 'Gee'?", "respuesta": "SNSD"},
+  {"pregunta": "¿Cual es el nombre de rapero en NCT?", "respuesta": "Mark"},
+  {"pregunta": "¿Que grupo tiene la cancion 'Next Level'?", "respuesta": "Aespa"},
+  {"pregunta": "¿Quien es la lider de ITZY?", "respuesta": "Yeji"},
+  {"pregunta": "¿Quien es el 'visual' en BTS?", "respuesta": "V"},
+  {"pregunta": "¿Quien es la maknae en BLACKPINK?", "respuesta": "Lisa"},
+  {"pregunta": "¿Como se llama la empresa de BLACKPINK?", "respuesta": "YG"},
+  {"pregunta": "¿Quien es el lider de EXO?", "respuesta": "Suho"},
+  {"pregunta": "¿Que color representa a EXO?", "respuesta": "Plateado"},
+  {"pregunta": "¿Quien es la lider de Twice?", "respuesta": "Jihyo"},
+  {"pregunta": "¿Que grupo canta 'Butter'?", "respuesta": "BTS"},
+  {"pregunta": "¿Quien es la principal bailarina en BLACKPINK?", "respuesta": "Lisa"},
+  {"pregunta": "¿Quien es el lider de NCT?", "respuesta": "Taeyong"},
+  {"pregunta": "¿Quien es el miembro mas joven de BTS?", "respuesta": "Jungkook"}
+]
+
+# Definir enemigos
+enemigos = {
+    "facil": {"nombre": "zombie", "daño": 1},
+    "normal": {"nombre": "vampiro", "daño": 2},
+    "dificil": {"nombre": "demonio", "daño": 3}
+}
+
+# Configuración de jugadores
+num_jugadores = int(input("¿Cuántos jugadores son?: "))
+for i in range(num_jugadores):
+    nombre = input(f"Nombre del jugador {i+1}: ")
+    jugadores.append({"nombre": nombre, "posicion": 0, "vida": 10})
+
+# Elegir un enemigo al azar
+enemigo = random.choice(list(enemigos.values()))
+posicion_enemigo = 0
+
+# Juego por rondas
+for ronda in range(1, num_rondas + 1):
+    print(f"\n--- Ronda {ronda} ---")
+
+    # Turno de cada jugador
+    for jugador in jugadores:
+        if jugador["vida"] <= 0:
+            continue
+
+        print(f"\nTurno de {jugador['nombre']}:")
+        
+        # Tirada de dado para moverse
+        tirada = random.randint(1, 6)
+        jugador["posicion"] += tirada
+        print(f"{jugador['nombre']} tiró un {tirada} y avanzó a la casilla {jugador['posicion']}")
+
+        # Comprobar casilla
+        if jugador["posicion"] % 2 == 0:
+            print(f"{jugador['nombre']} está en zona segura.")
+        else:
+            print(f"{jugador['nombre']} cayó en una casilla impar. Debe hacer una prueba de salvación.")
+            # Prueba de salvación
+            pregunta = random.choice(preguntas_cultura)
+            respuesta = input(f"{jugador['nombre']}, {pregunta['pregunta']}: ")
+            if respuesta.lower() == pregunta["respuesta"].lower():
+                print("¡Respuesta correcta!")
+            else:
+                penalizacion = random.choice([-1, -2, -3])
+                print(f"Respuesta incorrecta, tirada de penalización: {penalizacion}")
+                jugador["posicion"] += penalizacion
+                print(f"{jugador['nombre']} retrocede a la casilla {jugador['posicion']} debido a la penalización.")
+
+        # Verificar si el jugador llegó a la casilla final
+        if jugador["posicion"] >= casilla_final:
+            print(f"{jugador['nombre']} ha llegado a la casilla final y está a salvo.")
+            jugador["vida"] = 0  # Indica que el jugador ha terminado el juego
+
+    # Verificar si quedan jugadores activos antes de que el enemigo se mueva
+    jugadores_activos = [jugador for jugador in jugadores if jugador["vida"] > 0]
+    if not jugadores_activos:
+        print("¡Todos los supervivientes han muerto! El juego ha terminado.")
+        break
+
+    # Turno del enemigo controlado por la máquina
+    print(f"\n--- Turno del {enemigo['nombre'].capitalize()} ---")
+    max_posicion_jugadores = max(jugador["posicion"] for jugador in jugadores_activos)
+    if posicion_enemigo >= max_posicion_jugadores:
+        print(f"El {enemigo['nombre']} está por delante de los jugadores y espera hasta la siguiente ronda.")
+    else:
+        # El enemigo tira el dado y avanza
+        tirada_enemigo = random.randint(1, 6)
+        posicion_enemigo += tirada_enemigo
+        print(f"El {enemigo['nombre']} tiró un {tirada_enemigo} y avanzó a la casilla {posicion_enemigo}")
+
+        # Ataque a los jugadores en el camino
+        for jugador in jugadores_activos:
+            if jugador["posicion"] <= posicion_enemigo:
+                print(f"El {enemigo['nombre']} ataca a {jugador['nombre']}!")
+                pregunta = random.choice(preguntas_cultura)
+                respuesta = input(f"{jugador['nombre']}, {pregunta['pregunta']} para evitar el ataque: ")
+                if respuesta.lower() == pregunta["respuesta"].lower():
+                    print("¡Respuesta correcta! Ataque evitado.")
+                else:
+                    jugador["vida"] -= enemigo["daño"]
+                    print(f"{jugador['nombre']} falló la respuesta y recibió {enemigo['daño']} de daño. Vida actual: {jugador['vida']}")
+                    if jugador["vida"] <= 0:
+                        print(f"{jugador['nombre']} ha muerto.")
+
+    # Verificar si todos los jugadores han llegado a la casilla final
+    todos_a_salvo = all(jugador["vida"] <= 0 or jugador["posicion"] >= casilla_final for jugador in jugadores)
+    if todos_a_salvo:
+        print("¡Los jugadores han llegado al final y han ganado!")
+        break
+
+# Fin del juego
+print("\n--- Fin del juego ---")
+for jugador in jugadores:
+    if jugador["posicion"] >= casilla_final:
+        print(f"{jugador['nombre']} ha ganado.")
+    else:
+        print(f"{jugador['nombre']} ha perdido.")
+        
+if ronda == num_rondas and not todos_a_salvo:
+    print("El tiempo se ha agotado y los jugadores no lograron llegar a la meta a tiempo.")
