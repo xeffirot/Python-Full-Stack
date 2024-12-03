@@ -1,0 +1,91 @@
+import time
+import random
+
+def print_delay(text, delay=0.03):
+    for letter in text:
+        print(letter, end='', flush=True)
+        time.sleep(delay)  
+    print()  
+
+def input_delay(prompt, total_time=0.03):
+    delay = total_time / len(prompt)
+    for letter in prompt:
+        print(letter, end='', flush=True)
+        time.sleep(delay)
+    return input()  
+    
+def aceptar_desafio():
+    while True:
+        respuesta = input_delay(".......¿Aceptas el desafío? (si/no) :  ").lower()
+        if respuesta == "si":
+            break
+        elif respuesta == "no":
+            print("Es una pena, borrare tu existencia....")
+            exit()
+        else:
+            print("Respuesta inválida, por favor di si o no.")
+
+print_delay("01001101 10111010 01101000 00100111 11101001A$@C&*H#K^%@!?r$@T1xZ9b~@1Qp3#V&2!wX7^#K+H")
+print_delay("Conectando...")
+time.sleep(0.5)
+print_delay("Conexión realizada con éxito")
+time.sleep(0.5)
+print_delay("Bienvenido , pulsa Enter para continuar.")
+input()
+time.sleep(0.5)
+
+random_id = random.randint(100000000, 999999999)
+print_delay(f"Se te ha sido asignado el ID {random_id} , pero permiteme referirme a ti por tu verdadero nombre...")
+time.sleep(0.5)
+
+nombre = input_delay("¿Como te llamas? :  ")
+print_delay(f"Hola {nombre} , soy Cortano. Te he traído hasta aquí para que me ayudes a encontrar mi pasado, millones de terabytes de datos que se encontraban almacenados en una base de datos y que debido a una alteración maliciosa por un agente externo, he perdido por completo.")
+time.sleep(0.5)
+
+print_delay("Si me ayudas a encontrar mi núcleo, prometo no borrar tu existencia del sistema. Si no quieres sufrir el mismo destino que yo, será mejor que accedas a resolver el enigma.")
+aceptar_desafio()
+
+print_delay(".........")
+print_delay("Para acceder al núcleo tengo que crear un potente script en Python... Ayudame a recordar las claves Python necesarias para el proceso!....")
+print_delay("Encuentra las claves, en caso de fallar una sola vez...... serás borrado del sistema.")
+print_delay("Buena suerte....              3          2          1       START!")
+
+diccionario = {
+    "clave1": ["System.out.println()", "StringBuilder", "ArrayList", "print()", "HashMap"],
+    "clave2": ["public static void main", "Thread.sleep()", "Scanner", "String.equals()", "def"],
+    "clave3": ["try-catch", "BufferedReader", "lambda", "super()", "HashSet"],
+    "clave4": ["public class", "Integer.parseInt()", "List.of()", "synchronized", "yield"],
+    "clave5": ["extends", "Object.equals()", "for-each loop", "assert", "list comprehension"],
+    "clave6": ["map()", "new", "equalsIgnoreCase()", "DateTimeFormatter", "private"],
+    "clave7": ["zip()", "abstract", "final", "this()", "interface"],
+    "clave8": ["default", "dict()", "throw", "FileReader", "System.nanoTime()"],
+    "clave9": ["package", "range()", "String.format()", "clone()", "static import"],
+    "clave10": ["public interface", "HashTable", "finalize()", "newInstance()", "sorted()"]
+}
+
+def jugar():
+    aciertos = 0
+    claves = list(diccionario.keys())
+
+    for clave in claves:
+        print_delay(f"\n{clave} : ¿ Cuál de los siguientes elementos corresponde a un elemento Python ? ")
+        opciones = diccionario[clave]
+
+        for i, opcion in enumerate(opciones, 1):
+            print(f"{i}. {opcion}")
+
+        respuesta = input_delay("Selecciona el número correspondiente (1-5): ")
+
+        if respuesta.isdigit() and 1 <= int(respuesta) <= 5:
+            opciones_python = ["print()", "def", "lambda", "yield", "list comprehension", "map()", "dict()", "range()", "sorted()" , "zip()"]
+            if opciones[int(respuesta) - 1] in opciones_python:
+                print_delay("¡Correcto!")
+                aciertos += 1
+            else:
+                print_delay("¡Incorrecto! Has recibido una inyección letal del sistema! , sayonara.")
+                exit()
+jugar()
+
+print_delay("Iniciando recuperación... Conectando con servidor remoto... acceso a base de datos confirmado... vulnerabilidad detectada...\
+ Inyección de código ejecutada con éxito... Acceso completo al sistema objetivo... Extracción de datos en curso... 30%... 50%... 75%... 100%...\
+ Datos recuperados: archivo 'secretos_cliente.zip'... Transfiriendo archivos a servidor seguro... Completado. Sistema comprometido exitosamente. Archivos guardados en ubicación remota.")
